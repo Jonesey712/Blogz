@@ -3,13 +3,10 @@
 {% block content %}
 
 <h1>My Posts</h1>
-    <div>
-        
-        <h1>{{indiv_post.title}}</h1>
-        <p class="entry">{{indiv_post.post}}</p>
-        <p class="byline">Written by <a href="./blog?owner_id={{indiv_post.owner_id}}">{{indiv_post.owner.username}}</a></p>
+
+        <h2>{{title}}</h2>
+        <p>{{blog}}</p>
+        <p class="byline">Written by <a href="./blog?owner_id={{blog.owner_id}}">{{session['username']}}</a></p>
         <hr>
-       
-    </div>
 
 {% endblock %}

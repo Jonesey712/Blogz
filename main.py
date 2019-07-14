@@ -46,35 +46,46 @@ def index():
 
 @app.route('/blog', methods=['POST', 'GET'])
 def blog():
-    username = request.args.get('id')
-    owner = User.query.filter_by(id=username).first()
-
+    owner = User.query.filter_by(username=session['username']).first()
+    
     if request.method == 'POST':
-        blog_name = request.form['blog']
-        new_blog = Task(blog_name, owner)
+        blog_name = request.form('blog')
+        new_blog = Blog(blog_name, owner)
+        
+        #post_title = request.form('blog_title')
+        #post_entry = request.form('your_thoughts')
         db.session.add(new_blog)
         db.session.commit()
+    post_id = request.args.get('id')
+    #indiv_post = Blog.query.get(post_id)
+    user_id = request.args.get('owner_id')
+    posts = Blog.query.filter_by(owner_id=user_id).all()
+    blog = Blog.query.filter_by(owner=owner).all()
+    return render_template('indiv_post.html', owner=owner, blog=blog, title="Blogz")
 
-    blog = Blog.query.filter_by(id=username).all()
-    return render_template('blog.html', blog=blog, owner=owner)
     #post_id = request.args.get('id')
     #single_user_id = request.args.get('owner_id')
-    #owner = User.query.filter_by(username=single_user_id).first()
+    
+    #if request.method == 'POST':
+    #    indiv_post = Blog.query.get(post_id)
+    #    owner = User.query.filter_by(username=session['single_user_id']).first()
+    #    blog = Blog.query.filter_by(id=session['indiv_post']).all()
 
- 
-    #if single_user_id:
-    #    #indiv_post = Blog.query.get(post_id)
-    #    owner = User.query.filter_by(username=single_user_id).first()
-    #    blogs = Blog.query.filter_by(owner=owner).all()#.order_by.desc()
-    #    return render_template('postlist.html', title='Blogs ' + str(owner), owner=owner, post_id=post_id)
+    #    return render_template('indiv_post.html', indiv_post=indiv_post, owner=owner)
     #else:
-    #    if :
-    #        indiv_user = Blog.query.filter_by(owner_id=owner_id).all()
-    #        return render_template('blog.html', title="Blogs Your Uncle", blogs=blogs)
-    #else:    
-    #    blogs = Blog.query.order_by(Blog.id).all()
-    #    #blogs = Blog.query.filter_by(owner=owner).all()
-    #    return render_template('blog.html', title='Blogz', blog=blog)
+    #    if (single_user_id):
+    #        ind_user_blog_posts = Blog.query.filter_by(owner_id=single_user_id)
+    #        blog_name = request.form('blog')
+    #        new_blog = Blog(blog_name, owner)
+    #        db.session.add(new_blog)
+    #        db.session.commit()
+    #        return render_template('singleUser.html', posts=ind_user_blog_posts)
+    #    else:
+            # queries database for all existing blog entries
+            # post_id = request.args.get('id')
+    #        all_blog_posts = Blog.query.all()
+            # first of the pair matches to {{}} in for loop in the .html template, second of the pair matches to variable declared above
+    #        return render_template('blog.html', posts=all_blog_posts)
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
