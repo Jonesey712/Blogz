@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://build-a-blog:root@localhost:8889/build-a-blog'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://blogz:root@localhost:8889/blogz'
 app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
 app.secret_key = 'zyxwvutsrqp2'
@@ -25,7 +25,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(120), unique=True)
     password = db.Column(db.String(120))
-    blog = db.relationship('Blog', backref='owner')
+    blogs = db.relationship('Blog', backref='owner')
 
     def __init__(self, username, password):
         self.username = username
@@ -33,15 +33,65 @@ class User(db.Model):
 
 @app.before_request
 def require_login():
-    allowed_routes = ['login', 'register', 'blog', 'add_user', 'index']
+    allowed_routes = ['login', 'register', 'blog', 'index']
     if request.endpoint not in allowed_routes and 'username' not in session:
         return redirect('/login')
+
+@app.route('/')
+def index():
+    all_users = User.query.distinct()
+    #blog = Blog.query.all()
+    return render_template('index.html', list_all_users=all_users)
+
+@app.route('/blog', methods=['POST', 'GET'])
+def blog():
+
+    post_id = request.args.get('id')
+    single_user_id = request.args.get('owner_id')
+    
+#    if request.method == 'POST':
+#        indiv_post = Blog.query.get('post_id')
+#        owner = User.query.filter_by(username=session['single_user_id']).first()
+#        blog = Blog.query.filter_by(username=session['single_user_id']).first()
+
+#        return render_template('indiv_post.html', indiv_post=indiv_post, owner=owner, blog=blog)
+#indiv_post = Blog.query.get('post_id')
+#ind_user_blog_posts = Blog.query.filter_by(owner_id=single_user_id)
+    if (post_id):
+        indiv_post = Blog.query.get(post_id)
+        return render_template('indiv_post.html', indiv_post=indiv_post)
+    elif (single_user_id):
+        print(single_user_id)
+        ind_user_blog_posts = Blog.query.filter_by(owner_id=single_user_id)
+        return render_template('singleUser.html', posts=ind_user_blog_posts)
+    else:
+            # queries database for all existing blog entries
+            # post_id = request.args.get('id')
+        all_blog_posts = Blog.query.all()
+            # first of the pair matches to {{}} in for loop in the .html template, second of the pair matches to variable declared above
+        return render_template('blog.html', posts=all_blog_posts)
+    
+    #if  "user" in request.args:
+    #    user_id = request.args.get("user")
+    #    user = User.query.get(user_id)
+    #    user_blogs = Blog.query.filter_by(owner=user).all()
+    #    return render_template('singleUser.html', user_blogs=user_blogs)
+
+    #single_post = request.args.get("id")
+    #if single_post:
+    #    blog = Blog.query.get(single_post)
+    #    return render_template('indiv_post.html', blog=blog)
+    #else:
+    #    blogs = Blog.query.all()
+    #    return render_template('blog.html', blogs=blogs)
+
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+    
         user = User.query.filter_by(username=username).first()
 
         if user and user.password == password:
@@ -52,11 +102,11 @@ def login():
             flash('You seem to be missing some information or info is incorrect', 'error') 
             
     return render_template('login.html')
-
+   
 @app.route('/signup', methods=['POST', 'GET'])
 def register():
     username_error = ""
-    email_address_error = ""
+    #email_address_error = ""
     password_error = ""
     validate_password_error = ""
 
@@ -66,6 +116,7 @@ def register():
         password = request.form['password']
         validate_password = request.form['verify_password']
 
+        #owner = User.query.filter_by(username=session['username']).first()
 
         if not username.isalpha():
             username_error = "Not a valid user name!"
@@ -95,11 +146,11 @@ def register():
 
         existing_user = User.query.filter_by(username=username).first()
 
-        if not existing_user and not username_error and not password_error and not validate_password_error and not email_address_error:
+        if not existing_user and not username_error and not password_error and not validate_password_error:
             new_user = User(username, password)
             db.session.add(new_user)
             db.session.commit()
-            #session['username'] = username
+            session['username'] = username
             #flash('New user created. Happy blogging!')
             return redirect('/newpost')
         else:
@@ -107,28 +158,6 @@ def register():
             return render_template('signup.html')
     else:
         return render_template('signup.html')
-
-@app.route('/logout')
-def logout():
-    del session['username']
-    flash('You have been logged out. Come back soon')
-    return redirect('/blog')
-
-@app.route('/blog')
-def blog():
-    post_id = request.args.get('id')
-    single_user_id = request.args.get('owner_id')
-    if (post_id):
-        indiv_post = Blog.query.get(post_id)
-        return render_template('indiv_post.html', indiv_post=indiv_post)
-    else:
-        if (single_user_id):
-            indiv_user = Blog.query.filter_by(owner_id=single_user_id)
-            return render_template('singleUser.html', posts=indiv_user)
-        else:    
-            all_posts = Blog.query.all()
-            return render_template('blog.html', posts=all_posts)
-
 
 
 def val_empty(x):
@@ -178,17 +207,11 @@ def add_entry():
         return render_template('addnewpost.html')
 
 
-@app.route('/')
-def index():
-    #owner = User.query.filter_by(user=session['username']).all()
-    #if request.method == 'POST':
-        #blog = request.form['blog']
-        #new_blog = Blog(newpost, owner)
-        #db.session.add(new_blog)
-        #db.session.commit()
-    all_users = User.query.distinct()
-    return render_template('index.html', list_all_users=all_users)
-
+@app.route('/logout')
+def logout():
+    del session['username']
+    flash('You have been logged out. Come back soon')
+    return redirect('/blog')
 
 if __name__ == '__main__':
     app.run()
