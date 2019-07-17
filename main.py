@@ -36,6 +36,56 @@ def require_login():
     allowed_routes = ['login', 'register', 'blog', 'index']
     if request.endpoint not in allowed_routes and 'username' not in session:
         return redirect('/login')
+def get_users():
+    return User.query.all()
+
+@app.route('/')
+def index():
+    #users = User.query.all()
+    return render_template('index.html', users=get_users())
+
+@app.route('/blog', methods=['POST', 'GET'])
+def blog():
+    owner = User.query.filter_by(username=session['username']).first()
+    
+    if request.method == 'POST':
+        blog_name = request.form('blog')
+        new_blog = Blog(blog_name, owner)
+        
+        #post_title = request.form('blog_title')
+        #post_entry = request.form('your_thoughts')
+        db.session.add(new_blog)
+        db.session.commit()
+    post_id = request.args.get('id')
+    #indiv_post = Blog.query.get(post_id)
+    user_id = request.args.get('owner_id')
+    posts = Blog.query.filter_by(owner_id=user_id).all()
+    blog = Blog.query.filter_by(owner=owner).all()
+    return render_template('indiv_post.html', owner=owner, blog=blog, title="Blogz")
+
+    #post_id = request.args.get('id')
+    #single_user_id = request.args.get('owner_id')
+    
+    #if request.method == 'POST':
+    #    indiv_post = Blog.query.get(post_id)
+    #    owner = User.query.filter_by(username=session['single_user_id']).first()
+    #    blog = Blog.query.filter_by(id=session['indiv_post']).all()
+
+    #    return render_template('indiv_post.html', indiv_post=indiv_post, owner=owner)
+    #else:
+    #    if (single_user_id):
+    #        ind_user_blog_posts = Blog.query.filter_by(owner_id=single_user_id)
+    #        blog_name = request.form('blog')
+    #        new_blog = Blog(blog_name, owner)
+    #        db.session.add(new_blog)
+    #        db.session.commit()
+    #        return render_template('singleUser.html', posts=ind_user_blog_posts)
+    #    else:
+            # queries database for all existing blog entries
+            # post_id = request.args.get('id')
+    #        all_blog_posts = Blog.query.all()
+            # first of the pair matches to {{}} in for loop in the .html template, second of the pair matches to variable declared above
+    #        return render_template('blog.html', posts=all_blog_posts)
 
 @app.route('/')
 def index():
@@ -102,7 +152,12 @@ def login():
             flash('You seem to be missing some information or info is incorrect', 'error') 
             
     return render_template('login.html')
+<<<<<<< HEAD
    
+=======
+
+
+>>>>>>> d40c1c54c01ca5b97ccafb562397b0481643e268
 @app.route('/signup', methods=['POST', 'GET'])
 def register():
     username_error = ""
@@ -206,7 +261,10 @@ def add_entry():
     else:
         return render_template('addnewpost.html')
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> d40c1c54c01ca5b97ccafb562397b0481643e268
 @app.route('/logout')
 def logout():
     del session['username']

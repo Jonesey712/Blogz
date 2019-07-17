@@ -2,14 +2,25 @@
 
 {% block content %}
 
+<<<<<<< HEAD
 <h1>Blog Posts</h1>
 
 <div>
     {% for blog in posts %}
+=======
+<h1>Blog</h1>
+<div>
+    
+>>>>>>> d40c1c54c01ca5b97ccafb562397b0481643e268
     <h2><a href="./blog?id={{blog.id}}">{{blog.title}}</a></h2>
     <p class="entry">{{blog.post}}</p>
     <p class="byline">Written by <a href="./blog?owner_id={{blog.owner_id}}">{{blog.owner.username}}</a></p>
     <hr>
+<<<<<<< HEAD
     {% endfor %}
+=======
+   
+</div>
+>>>>>>> d40c1c54c01ca5b97ccafb562397b0481643e268
 
 {% endblock %}
