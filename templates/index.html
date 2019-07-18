@@ -3,16 +3,6 @@
 {% block content %}
 
 <h1>Author Page</h1>
-<<<<<<< HEAD
-<div>
-    <ul>
-
-        {% for user in list_all_users %}
-        <li><a href="./blog?owner_id={{user.id}}">{{user.username}}</a></li>
-        {% endfor %}
-    </ul>
-</div>
-=======
     <div>
         <ul>
             {% for user in users %}
@@ -20,6 +10,5 @@
             {% endfor %}
         </ul>
     </div>
->>>>>>> d40c1c54c01ca5b97ccafb562397b0481643e268
 
 {% endblock %}

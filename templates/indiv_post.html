@@ -2,19 +2,9 @@
 
 {% block content %}
 <h1>My Posts</h1>
-
-<<<<<<< HEAD
-<div>
+        
     <h2>{{indiv_post.title}}</h2>
     <p class="entry">{{indiv_post.post}}</p>
     <p class="byline">Written by <a href="./blog?owner_id={{indiv_post.owner_id}}">{{indiv_post.owner.username}}</a></p>
-
-</div>
-=======
-        <h2>{{title}}</h2>
-        <p>{{blog}}</p>
-        <p class="byline">Written by <a href="./blog?owner_id={{blog.owner_id}}">{{session['username']}}</a></p>
-        <hr>
->>>>>>> d40c1c54c01ca5b97ccafb562397b0481643e268
 
 {% endblock %}

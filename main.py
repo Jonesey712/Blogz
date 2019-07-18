@@ -44,74 +44,17 @@ def index():
     users = User.query.all()
     return render_template('index.html', users=users)
 
-@app.route('/blog', methods=['POST', 'GET'])
-def blog():
-    owner = User.query.filter_by(username=session['username']).first()
-    
-    if request.method == 'POST':
-        blog_name = request.form('blog')
-        new_blog = Blog(blog_name, owner)
-        
-        #post_title = request.form('blog_title')
-        #post_entry = request.form('your_thoughts')
-        db.session.add(new_blog)
-        db.session.commit()
-    post_id = request.args.get('id')
-    #indiv_post = Blog.query.get(post_id)
-    user_id = request.args.get('owner_id')
-    posts = Blog.query.filter_by(owner_id=user_id).all()
-    blog = Blog.query.filter_by(owner=owner).all()
-    return render_template('indiv_post.html', owner=owner, blog=blog, title="Blogz")
-
-    #post_id = request.args.get('id')
-    #single_user_id = request.args.get('owner_id')
-    
-    #if request.method == 'POST':
-    #    indiv_post = Blog.query.get(post_id)
-    #    owner = User.query.filter_by(username=session['single_user_id']).first()
-    #    blog = Blog.query.filter_by(id=session['indiv_post']).all()
-
-    #    return render_template('indiv_post.html', indiv_post=indiv_post, owner=owner)
-    #else:
-    #    if (single_user_id):
-    #        ind_user_blog_posts = Blog.query.filter_by(owner_id=single_user_id)
-    #        blog_name = request.form('blog')
-    #        new_blog = Blog(blog_name, owner)
-    #        db.session.add(new_blog)
-    #        db.session.commit()
-    #        return render_template('singleUser.html', posts=ind_user_blog_posts)
-    #    else:
-            # queries database for all existing blog entries
-            # post_id = request.args.get('id')
-    #        all_blog_posts = Blog.query.all()
-            # first of the pair matches to {{}} in for loop in the .html template, second of the pair matches to variable declared above
-    #        return render_template('blog.html', posts=all_blog_posts)
-
-@app.route('/')
-def index():
-    all_users = User.query.distinct()
-    #blog = Blog.query.all()
-    return render_template('index.html', list_all_users=all_users)
 
 @app.route('/blog', methods=['POST', 'GET'])
 def blog():
 
     post_id = request.args.get('id')
     single_user_id = request.args.get('owner_id')
-    
-#    if request.method == 'POST':
-#        indiv_post = Blog.query.get('post_id')
-#        owner = User.query.filter_by(username=session['single_user_id']).first()
-#        blog = Blog.query.filter_by(username=session['single_user_id']).first()
 
-#        return render_template('indiv_post.html', indiv_post=indiv_post, owner=owner, blog=blog)
-#indiv_post = Blog.query.get('post_id')
-#ind_user_blog_posts = Blog.query.filter_by(owner_id=single_user_id)
     if (post_id):
         indiv_post = Blog.query.get(post_id)
         return render_template('indiv_post.html', indiv_post=indiv_post)
     elif (single_user_id):
-        print(single_user_id)
         ind_user_blog_posts = Blog.query.filter_by(owner_id=single_user_id)
         return render_template('singleUser.html', posts=ind_user_blog_posts)
     else:
@@ -121,20 +64,6 @@ def blog():
             # first of the pair matches to {{}} in for loop in the .html template, second of the pair matches to variable declared above
         return render_template('blog.html', posts=all_blog_posts)
     
-    #if  "user" in request.args:
-    #    user_id = request.args.get("user")
-    #    user = User.query.get(user_id)
-    #    user_blogs = Blog.query.filter_by(owner=user).all()
-    #    return render_template('singleUser.html', user_blogs=user_blogs)
-
-    #single_post = request.args.get("id")
-    #if single_post:
-    #    blog = Blog.query.get(single_post)
-    #    return render_template('indiv_post.html', blog=blog)
-    #else:
-    #    blogs = Blog.query.all()
-    #    return render_template('blog.html', blogs=blogs)
-
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -210,6 +139,7 @@ def register():
         return render_template('signup.html')
 
 
+
 def val_empty(x):
     if x:
         return True
@@ -227,14 +157,6 @@ def add_entry():
         owner = User.query.filter_by(username=session['username']).first()
         post_new = Blog(post_title, post_entry, owner)
 
-        
-        #blog = request.form['blog']
-        #blog.append(blog)
-        #db.session.add(blog)
-        #db.session.commit()
-
-        #blog = Blog.query.filter_by(owner=owner).all
-        #return render_template('blog.html', title='build-a-blog', blog=blog)
 
         if val_empty(post_title) and val_empty(post_entry):
             db.session.add(post_new)
@@ -242,17 +164,19 @@ def add_entry():
             link = "/blog?id=" + str(post_new.id)
             return redirect(link)
 
-        else:
-            if not val_empty(post_title) and not val_empty(post_entry):
-                title_error = "You have to give your thought a title!"
-                entry_error = "You forgot to write down your thoughts!"
-                return render_template('addnewpost.html', title_error=title_error, entry_error=entry_error)
-            elif not val_empty(post_title):
-                title_error  = "You have to give your thought a title!"
-                return render_template('addnewpost.html', title_error=title_error)
-            elif not val_empty(post_entry):
-                entry_error = "You forgot to write down your thoughts!"
-                return render_template('addnewpost.html', post_entry=post_entry)
+        
+        if not val_empty(post_title) and not val_empty(post_entry):
+            title_error = "You have to give your thought a title!"
+            entry_error = "You forgot to write down your thoughts!"
+            return render_template('addnewpost.html', title_error=title_error, entry_error=entry_error)
+
+        if not val_empty(post_title):
+            title_error  = "You have to give your thought a title!"
+            return render_template('addnewpost.html', title_error=title_error)
+
+        if not val_empty(post_entry):
+            entry_error = "You forgot to write down your thoughts!"
+            return render_template('addnewpost.html', post_entry=post_entry, entry_error=entry_error)
     else:
         return render_template('addnewpost.html')
 

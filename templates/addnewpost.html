@@ -3,8 +3,7 @@
 {% block content %}
 
     <h1>Add a New Entry</h1>
-    <body>
-        <form method="post " action="/newpost">
+        <form action="/newpost" method="post">
         <table>
             <tr>
                 <td>
@@ -14,7 +13,7 @@
                 </td>
                 <td>
                     <label>
-                    <input type="text" name="blog_title" value="{{post_title}}" />
+                    <input type="text" name="blog_title" value="{{post_title}}">
                     <p class="error">{{title_error}}</p>
                     </label>
                 </td>
@@ -38,6 +37,5 @@
         </label>
         </table>
         </form>
-    </body>
 
 {% endblock %}
