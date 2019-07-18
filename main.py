@@ -41,8 +41,8 @@ def get_users():
 
 @app.route('/')
 def index():
-    #users = User.query.all()
-    return render_template('index.html', users=get_users())
+    users = User.query.all()
+    return render_template('index.html', users=users)
 
 @app.route('/blog', methods=['POST', 'GET'])
 def blog():
@@ -152,12 +152,7 @@ def login():
             flash('You seem to be missing some information or info is incorrect', 'error') 
             
     return render_template('login.html')
-<<<<<<< HEAD
    
-=======
-
-
->>>>>>> d40c1c54c01ca5b97ccafb562397b0481643e268
 @app.route('/signup', methods=['POST', 'GET'])
 def register():
     username_error = ""
@@ -261,10 +256,6 @@ def add_entry():
     else:
         return render_template('addnewpost.html')
 
-<<<<<<< HEAD
-
-=======
->>>>>>> d40c1c54c01ca5b97ccafb562397b0481643e268
 @app.route('/logout')
 def logout():
     del session['username']
