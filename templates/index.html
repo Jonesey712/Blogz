@@ -4,7 +4,7 @@
 
 <h1>Author Page</h1>
     <div>
-        <ul>
+        <ul style="list-style-type:none";>
             {% for user in users %}
             <li><a href="/blog?owner_id={{user.id}}">{{user.username}}</a></li>
             {% endfor %}

@@ -1,0 +1,13 @@
+body {
+    background-color: lightseagreen;
+    padding: 20px;
+    margin:0 auto;
+    width: 540px;
+    font: 16px san-serif;
+    border-radius: 10px;
+}
+           
+.error {
+    color: red;
+}
+

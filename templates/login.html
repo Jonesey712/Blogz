@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
+    <form action='/login' method= 'post'>
     <h1>Login</h1>
     <p>Don't have an account? Signup <a href='/signup'>here</a></p>
-    <form action='/login' method= 'post'>
+    
         <p class="flash">
                 {% with messages = get_flashed_messages(with_categories=True) %}
                 <ul>
@@ -35,7 +35,7 @@
                 </td>
             </tr>
             <tr>
-                <input type="submit" value="Submit" />
+                <input type="submit" value="Login" />
             </tr>
         </table>
     
