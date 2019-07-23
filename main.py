@@ -52,17 +52,17 @@ def blog():
     single_user_id = request.args.get('owner_id')
 
     if (post_id):
-        indiv_post = Blog.query.get(post_id)
-        return render_template('indiv_post.html', indiv_post=indiv_post)
+        individual = Blog.query.get(post_id)
+        return render_template('indiv_post.html', individual=individual)
     elif (single_user_id):
-        ind_user_blog_posts = Blog.query.filter_by(owner_id=single_user_id)
-        return render_template('singleUser.html', posts=ind_user_blog_posts)
+        indiv_user_blog_posts = Blog.query.filter_by(owner_id=single_user_id)
+        return render_template('singleUser.html', posts=indiv_user_blog_posts)
     else:
             # queries database for all existing blog entries
             # post_id = request.args.get('id')
-        all_blog_posts = Blog.query.all()
+        all_posts = Blog.query.all()
             # first of the pair matches to {{}} in for loop in the .html template, second of the pair matches to variable declared above
-        return render_template('blog.html', posts=all_blog_posts)
+        return render_template('blog.html', posts=all_posts)
     
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -140,7 +140,7 @@ def register():
 
 
 
-def val_empty(x):
+def value_empty(x):
     if x:
         return True
     else:
@@ -158,23 +158,23 @@ def add_entry():
         post_new = Blog(post_title, post_entry, owner)
 
 
-        if val_empty(post_title) and val_empty(post_entry):
+        if value_empty(post_title) and value_empty(post_entry):
             db.session.add(post_new)
             db.session.commit()
             link = "/blog?id=" + str(post_new.id)
             return redirect(link)
 
         
-        if not val_empty(post_title) and not val_empty(post_entry):
+        if not value_empty(post_title) and not value_empty(post_entry):
             title_error = "You have to give your thought a title!"
             entry_error = "You forgot to write down your thoughts!"
             return render_template('addnewpost.html', title_error=title_error, entry_error=entry_error)
 
-        if not val_empty(post_title):
+        if not value_empty(post_title):
             title_error  = "You have to give your thought a title!"
             return render_template('addnewpost.html', title_error=title_error)
 
-        if not val_empty(post_entry):
+        if not value_empty(post_entry):
             entry_error = "You forgot to write down your thoughts!"
             return render_template('addnewpost.html', post_entry=post_entry, entry_error=entry_error)
     else:

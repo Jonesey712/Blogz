@@ -3,8 +3,8 @@
 {% block content %}
 <h1>My Posts</h1>
         
-    <h2>{{indiv_post.title}}</h2>
-    <p class="entry">{{indiv_post.post}}</p>
-    <p class="byline">Written by <a href="./blog?owner_id={{indiv_post.owner_id}}">{{indiv_post.owner.username}}</a></p>
+    <h2>{{individual.title}}</h2>
+    <p class="entry">{{individualt.post}}</p>
+    <p class="byline">Written by <a href="./blog?owner_id={{individual.owner_id}}">{{individual.owner.username}}</a></p>
 
 {% endblock %}
